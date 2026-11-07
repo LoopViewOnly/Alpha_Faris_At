@@ -1,0 +1,191 @@
+/* Color Palette & Variables */
+:root {
+  --bg-color: #030308;
+  --text-main: #f5f5f7;
+  --text-muted: #86868b;
+  --accent-burgundy: #6b1426;
+  --accent-glow: #e63946;
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* Reset & Foundation */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(1.5rem, 4vw, 4rem) clamp(1rem, 3vw, 1.5rem);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Ambient Lighting */
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(clamp(80px, 10vw, 150px));
+  z-index: 0;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.glow-1 {
+  width: min(500px, 90vw);
+  height: min(500px, 90vw);
+  background: var(--accent-burgundy);
+  top: -5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.glow-2 {
+  width: min(400px, 80vw);
+  height: min(400px, 80vw);
+  background: var(--accent-glow);
+  bottom: 5%;
+  right: 5%;
+}
+
+/* Container Structure */
+.cinematic-container {
+  max-width: 1100px;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* Header & Typography */
+.hero-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pill-tag {
+  font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ff4d6d;
+  background: rgba(255, 77, 109, 0.1);
+  border: 1px solid rgba(255, 77, 109, 0.3);
+  padding: 0.4rem 1.1rem;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+}
+
+.glow-title {
+  font-size: clamp(2rem, 5.5vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.45) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+}
+
+.subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: -0.01em;
+}
+
+/* Glassmorphic Overview Card */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: clamp(16px, 3vw, 24px);
+  padding: clamp(1.25rem, 3.5vw, 2.5rem);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.description {
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  line-height: 1.7;
+  color: #c7c7d1;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.description strong {
+  color: #ffffff;
+}
+
+/* Interactive Responsive Grid Layout */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+/* Card Styling & Hover Animations */
+.gallery-card {
+  position: relative;
+  border-radius: clamp(16px, 3vw, 24px);
+  overflow: hidden;
+  background: #080811;
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease;
+  min-height: clamp(280px, 45vh, 360px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.gallery-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Dark Vignette Overlay */
+.img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(3, 3, 8, 0.88) 85%
+  );
+  z-index: 1;
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-card:hover img {
+  transform: scale(1.06);
+}
+
+.card-caption {
+  position: relative;
+  z-index: 2;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+}

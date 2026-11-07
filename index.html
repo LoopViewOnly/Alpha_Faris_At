@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apple Special Event — Cinematic Showcase</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration for Cinematic Theme -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            appleBg: '#030308',
+            burgundyGlow: '#8b0032',
+            laserCyan: '#00f2fe',
+            electricPurple: '#7b2cbf',
+          },
+          animation: {
+            'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 4s ease-in-out infinite',
+            'spotlight': 'spotlight 8s ease infinite alternate',
+            'flare': 'flare 3s ease-in-out infinite alternate',
+            'light-sweep': 'sweep 6s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            spotlight: {
+              '0%': { opacity: '0.4', transform: 'scale(1) translateY(0)' },
+              '100%': { opacity: '0.8', transform: 'scale(1.15) translateY(-20px)' },
+            },
+            flare: {
+              '0%': { opacity: '0.2', transform: 'rotate(0deg) scale(0.9)' },
+              '100%': { opacity: '0.7', transform: 'rotate(15deg) scale(1.1)' },
+            },
+            sweep: {
+              '0%': { transform: 'translateX(-100%) translateY(-100%) rotate(25deg)' },
+              '100%': { transform: 'translateX(200%) translateY(200%) rotate(25deg)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030308;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e1b4b;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3730a3;
+    }
+
+    /* Film Grain Overlay */
+    .film-grain {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+    }
+
+    /* Glassmorphism & Lens Flare Styling */
+    .glass-card {
+      background: rgba(10, 10, 20, 0.55);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+    
+    .glass-nav {
+      background: rgba(3, 3, 8, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .metallic-text {
+      background: linear-gradient(180deg, #ffffff 0%, #94a3b8 60%, #475569 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .neon-text-burgundy {
+      color: #ff2a6d;
+      text-shadow: 0 0 12px rgba(139, 0, 50, 0.8), 0 0 24px rgba(255, 42, 109, 0.4);
+    }
+
+    .neon-text-cyan {
+      color: #00f2fe;
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.8), 0 0 24px rgba(0, 242, 254, 0.4);
+    }
+
+    .neon-text-purple {
+      color: #c084fc;
+      text-shadow: 0 0 12px rgba(123, 44, 191, 0.8), 0 0 24px rgba(192, 132, 252, 0.4);
+    }
+
+    /* Interactive 3D Parallax Tilt */
+    .tilt-card {
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .lens-flare {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(0,242,254,0.35) 0%, rgba(123,44,191,0.2) 45%, rgba(0,0,0,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(12px);
+      transition: opacity 0.3s ease;
+    }
+
+    /* Anamorphic Flare Bar */
+    .anamorphic-flare {
+      background: linear-gradient(90deg, transparent 0%, rgba(0, 242, 254, 0.8) 50%, transparent 100%);
+      box-shadow: 0 0 15px #00f2fe, 0 0 30px #7b2cbf;
+    }
+  </style>
+</head>
+<body class="bg-appleBg text-gray-100 font-sans antialiased min-h-screen relative overflow-x-hidden selection:bg-laserCyan selection:text-black">
+
+  <!-- Cinematic Background Elements -->
+  <div class="fixed inset-0 pointer-events-none z-40 film-grain"></div>
+  <canvas id="stars-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+  <!-- Dramatic Spotlights & Dynamic Anamorphic Flare -->
+  <div class="fixed top-[-20%] left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-to-b from-burgundyGlow/30 via-electricPurple/20 to-transparent rounded-full blur-[180px] pointer-events-none z-0 animate-spotlight"></div>
+  <div class="fixed bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-laserCyan/10 rounded-full blur-[180px] pointer-events-none z-0"></div>
+  <div class="fixed top-[40%] right-[-10%] w-[550px] h-[550px] bg-electricPurple/15 rounded-full blur-[160px] pointer-events-none z-0"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 glass-nav px-4 md:px-8 py-3.5 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Apple Logo & Title -->
+      <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('overview')">
+        <svg class="w-6 h-6 fill-current text-white group-hover:text-laserCyan transition-colors drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" viewBox="0 0 170 170">
+          <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.33.13-9.13-1.9-14.4-6.1-3.23-2.6-7.16-7.25-11.8-13.93-6.22-8.99-11.2-18.89-14.94-29.72-3.74-10.83-5.61-21.2-5.61-31.11 0-14.76 3.8-26.85 11.41-36.27 7.61-9.42 17.2-14.23 28.78-14.43 4.22 0 9.21 1.15 14.97 3.44 5.76 2.29 9.69 3.44 11.78 3.44 1.83 0 5.86-1.22 12.09-3.66 6.22-2.44 11.27-3.56 15.15-3.35 11.05.61 19.98 4.58 26.8 11.91-9.91 5.97-14.76 14.34-14.55 25.12.21 8.52 3.48 15.82 9.8 21.9 6.32 6.08 13.88 9.54 22.68 10.38-2.6 7.63-6.14 15.22-10.62 22.78zM119.22 31.86c0-6.75 2.45-13.35 7.35-19.8 4.9-6.45 11.14-10.42 18.72-11.91.54 6.75-1.78 13.25-6.96 19.5-5.18 6.25-11.36 10.02-18.54 11.31-.1-.31-.38-.54-.57-.9-.01-1.02 0-2.02 0-3.03z"/>
+        </svg>
+        <div class="flex flex-col">
+          <span class="font-extrabold text-sm sm:text-base tracking-wider text-white uppercase">Apple Premiere</span>
+          <span class="text-[10px] text-gray-400 tracking-widest uppercase font-semibold">Special Keynote 2026</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Tabs -->
+      <div class="hidden lg:flex items-center gap-1 p-1.5 rounded-full glass-card border border-white/15">
+        <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 bg-gradient-to-r from-burgundyGlow to-electricPurple text-white shadow-[0_0_20px_rgba(139,0,50,0.6)]">
+          Overview
+        </button>
+        <button onclick="switchTab('iphone')" id="tab-iphone" class="tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 text-gray-400 hover:text-laserCyan">
+          18 Pro Max
+        </button>
+        <button onclick="switchTab('duo')" id="tab-duo" class="tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 text-gray-400 hover:text-laserCyan">
+          18 Duo
+        </button>
+        <button onclick="switchTab('homeview')" id="tab-homeview" class="tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 text-gray-400 hover:text-electricPurple">
+          HomeView
+        </button>
+        <button onclick="switchTab('compare')" id="tab-compare" class="tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 text-gray-400 hover:text-white">
+          Compare Matrix
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 text-gray-400 hover:text-laserCyan">
+          Tech Quiz
+        </button>
+      </div>
+
+      <!-- Action Button -->
+      <button onclick="switchTab('quiz')" class="relative group px-5 py-2 rounded-full bg-gradient-to-r from-laserCyan to-blue-600 text-black text-xs font-extrabold uppercase tracking-wider transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,242,254,0.8)] hover:scale-105 active:scale-95">
+        Test Knowledge
+      </button>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <div class="flex lg:hidden items-center justify-between mt-3 pt-2.5 border-t border-white/10 text-xs font-semibold overflow-x-auto gap-3 px-2">
+      <button onclick="switchTab('overview')" id="mtab-overview" class="mobile-tab text-laserCyan font-bold whitespace-nowrap uppercase">Overview</button>
+      <button onclick="switchTab('iphone')" id="mtab-iphone" class="mobile-tab text-gray-400 whitespace-nowrap uppercase">18 Pro Max</button>
+      <button onclick="switchTab('duo')" id="mtab-duo" class="mobile-tab text-gray-400 whitespace-nowrap uppercase">18 Duo</button>
+      <button onclick="switchTab('homeview')" id="mtab-homeview" class="mobile-tab text-gray-400 whitespace-nowrap uppercase">HomeView</button>
+      <button onclick="switchTab('compare')" id="mtab-compare" class="mobile-tab text-gray-400 whitespace-nowrap uppercase">Compare</button>
+      <button onclick="switchTab('quiz')" id="mtab-quiz" class="mobile-tab text-gray-400 whitespace-nowrap uppercase">Quiz</button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 relative z-10">
+
+    <!-- SECTION 1: OVERVIEW HERO -->
+    <section id="sec-overview" class="tab-content block space-y-16">
+      <!-- Trailer Hero Header -->
+      <div class="text-center space-y-6 max-w-4xl mx-auto pt-4 relative">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-burgundyGlow/20 border border-burgundyGlow/50 text-laserCyan text-xs font-extrabold uppercase tracking-widest backdrop-blur-md shadow-[0_0_20px_rgba(139,0,50,0.5)]">
+          <span class="w-2 h-2 rounded-full bg-laserCyan animate-ping"></span>
+          World Premiere Showcase
+        </div>
+        <h1 class="text-4xl sm:text-7xl font-black tracking-tight metallic-text leading-none uppercase drop-shadow-2xl">
+          Titanium. Dual Screens. <br/>
+          <span class="neon-text-cyan">Ambient Intelligence.</span>
+        </h1>
+        <p class="text-base sm:text-xl text-gray-300 font-light max-w-2xl mx-auto leading-relaxed">
+          Step into the future of computing. Unveiling the trio engineered to redefine speed, hardware versatility, and smart home automation.
+        </p>
+      </div>
+
+      <!-- Cinematic iDigital Video Showcase Hero Card -->
+      <div class="max-w-4xl mx-auto glass-card rounded-3xl p-3 sm:p-5 relative overflow-hidden border border-white/20 shadow-[0_0_60px_rgba(0,242,254,0.25)] group">
+        <!-- Lens flare effect overlay -->
+        <div class="absolute top-0 left-0 w-full h-1 anamorphic-flare opacity-70 animate-light-sweep"></div>
+        <div class="absolute -top-12 -left-12 w-48 h-48 bg-laserCyan/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-electricPurple/20 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="relative rounded-2xl overflow-hidden bg-black aspect-video border border-white/10 shadow-2xl flex items-center justify-center">
+          <video id="hero-video" autoplay loop muted playsinline class="w-full h-full object-cover">
+            <source src="https://www.idigital.co.il/cdn/shop/videos/c/vp/0cd8300a47db4acc950c98062f499cd9/0cd8300a47db4acc950c98062f499cd9.HD-1080p-7.2Mbps-93947616.mp4?v=0" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="absolute inset-0 bg-gradient-to-t from-appleBg/90 via-transparent to-transparent pointer-events-none"></div>
+          
+          <!-- Interactive Video Controls Overlay -->
+          <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-black/60 backdrop-blur-md border border-white/20 text-xs font-bold text-white shadow-lg">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="hidden sm:inline">Official Keynote Trailer — iDigital Premiere</span>
+              <span class="sm:hidden">Keynote Trailer</span>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <button onclick="toggleVideoMute()" id="mute-btn" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-laserCyan hover:text-black transition-all flex items-center gap-1.5 text-[11px]">
+                <svg id="mute-icon" class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zM3 9v6h4l5 5V4L7 9H3z"/></svg>
+                <span id="mute-text">Unmute</span>
+              </button>
+              <button onclick="restartVideo()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-laserCyan hover:text-black transition-all flex items-center gap-1.5 text-[11px]">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                <span>Replay</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Grid Showcase (Interactive 3D Cards) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Card 1: iPhone 18 Pro Max -->
+        <div onclick="switchTab('iphone')" class="tilt-card glass-card rounded-3xl p-7 relative overflow-hidden group cursor-pointer border border-white/10 hover:border-burgundyGlow/80 hover:shadow-[0_0_40px_rgba(139,0,50,0.4)] transition-all duration-500 flex flex-col justify-between min-h-[440px]">
+          <div class="lens-flare -top-10 -right-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <div class="space-y-3 z-10">
+            <span class="text-xs font-black neon-text-burgundy tracking-widest uppercase">Ultra Flagship</span>
+            <h2 class="text-3xl font-extrabold text-white tracking-tight">iPhone 18 Pro Max</h2>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+              Powered by the TSMC 2nm A20 Pro chip with mechanical variable aperture optical lens.
+            </p>
+          </div>
+          <div class="my-6 relative h-52 rounded-2xl overflow-hidden border border-white/10 group-hover:scale-105 transition-transform duration-500">
+            <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=80" alt="iPhone 18 Pro Max Titanium" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+            <div class="absolute bottom-3 left-3 text-[11px] font-bold text-laserCyan uppercase tracking-widest">
+              A20 Pro • Variable Aperture
+            </div>
+          </div>
+          <div class="flex items-center justify-between z-10 pt-2 border-t border-white/10">
+            <span class="text-sm font-extrabold text-white">$1,199 <span class="text-[10px] text-gray-400 font-normal">USD</span></span>
+            <span class="text-xs font-bold text-laserCyan group-hover:translate-x-1 transition-transform flex items-center gap-1">
+              Explore Pro Max &rarr;
+            </span>
+          </div>
+        </div>
+
+        <!-- Card 2: iPhone 18 Duo -->
+        <div onclick="switchTab('duo')" class="tilt-card glass-card rounded-3xl p-7 relative overflow-hidden group cursor-pointer border border-white/10 hover:border-laserCyan/80 hover:shadow-[0_0_40px_rgba(0,242,254,0.3)] transition-all duration-500 flex flex-col justify-between min-h-[440px]">
+          <div class="lens-flare -top-10 -right-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <div class="space-y-3 z-10">
+            <span class="text-xs font-black neon-text-cyan tracking-widest uppercase">Foldable Innovation</span>
+            <h2 class="text-3xl font-extrabold text-white tracking-tight">iPhone 18 Duo</h2>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+              Dual Ultra Retina XDR flexible displays with zero-crease liquid-metal titanium hinge.
+            </p>
+          </div>
+          <div class="my-6 relative h-52 rounded-2xl overflow-hidden border border-white/10 group-hover:scale-105 transition-transform duration-500">
+            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80" alt="iPhone 18 Duo Dual Screen Concept" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+            <div class="absolute bottom-3 left-3 text-[11px] font-bold text-laserCyan uppercase tracking-widest">
+              Dual Display • Liquid Metal
+            </div>
+          </div>
+          <div class="flex items-center justify-between z-10 pt-2 border-t border-white/10">
+            <span class="text-sm font-extrabold text-white">$1,499 <span class="text-[10px] text-gray-400 font-normal">USD</span></span>
+            <span class="text-xs font-bold text-laserCyan group-hover:translate-x-1 transition-transform flex items-center gap-1">
+              Explore Duo &rarr;
+            </span>
+          </div>
+        </div>
+
+        <!-- Card 3: Apple HomeView Hub -->
+        <div onclick="switchTab('homeview')" class="tilt-card glass-card rounded-3xl p-7 relative overflow-hidden group cursor-pointer border border-white/10 hover:border-electricPurple/80 hover:shadow-[0_0_40px_rgba(123,44,191,0.4)] transition-all duration-500 flex flex-col justify-between min-h-[440px]">
+          <div class="lens-flare -top-10 -right-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <div class="space-y-3 z-10">
+            <span class="text-xs font-black neon-text-purple tracking-widest uppercase">Smart Home Core</span>
+            <h2 class="text-3xl font-extrabold text-white tracking-tight">Apple HomeView</h2>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+              Robotic swiveling smart display with homeOS, spatial audio, and localized AI intelligence.
+            </p>
+          </div>
+          <div class="my-6 relative h-52 rounded-2xl overflow-hidden border border-white/10 group-hover:scale-105 transition-transform duration-500">
+            <img src="https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80" alt="Apple HomeView Smart Display Hub" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+            <div class="absolute bottom-3 left-3 text-[11px] font-bold text-electricPurple uppercase tracking-widest">
+              Robotic Arm • homeOS
+            </div>
+          </div>
+          <div class="flex items-center justify-between z-10 pt-2 border-t border-white/10">
+            <span class="text-sm font-extrabold text-white">$499 <span class="text-[10px] text-gray-400 font-normal">USD</span></span>
+            <span class="text-xs font-bold text-electricPurple group-hover:translate-x-1 transition-transform flex items-center gap-1">
+              Explore HomeView &rarr;
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: IPHONE 18 PRO MAX -->
+    <section id="sec-iphone" class="tab-content hidden space-y-12">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border border-white/15 relative overflow-hidden tilt-card">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class="space-y-6">
+            <div class="inline-block px-3.5 py-1 rounded-full bg-burgundyGlow/30 border border-burgundyGlow text-neon-text-burgundy text-xs font-extrabold uppercase tracking-widest">
+              Architectural Flagship
+            </div>
+            <h2 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">
+              iPhone 18 <br/><span class="neon-text-burgundy">Pro Max</span>
+            </h2>
+            <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+              Forged with grade 5 aerospace titanium and powered by the 2nm A20 Pro Bionic Neural Engine. Introduces cinema-grade mechanical variable aperture (f/1.4 to f/4.0) for unprecedented mobile optical precision.
+            </p>
+
+            <div class="grid grid-cols-2 gap-4 pt-4">
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-burgundyGlow/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Chipset</span>
+                <span class="text-xl font-bold text-white">Apple A20 Pro (2nm)</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-burgundyGlow/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Main Camera</span>
+                <span class="text-xl font-bold text-white">48MP Variable Lens</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-burgundyGlow/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Display</span>
+                <span class="text-xl font-bold text-white">6.9" ProMotion 120Hz</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-burgundyGlow/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Peak Brightness</span>
+                <span class="text-xl font-bold text-white">3,200 nits</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative rounded-3xl overflow-hidden border border-white/20 shadow-2xl h-[450px] group">
+            <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=1000&q=80" alt="iPhone 18 Pro Max Close Up" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-appleBg via-transparent to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-black/70 backdrop-blur-md border border-white/10">
+              <span class="text-xs text-laserCyan font-bold uppercase tracking-wider block">Key Highlight</span>
+              <p class="text-xs text-gray-300 mt-1">Periscope 6x optical zoom with true optical image stabilization 3.0.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: IPHONE 18 DUO -->
+    <section id="sec-duo" class="tab-content hidden space-y-12">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border border-white/15 relative overflow-hidden tilt-card">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class="relative rounded-3xl overflow-hidden border border-white/20 shadow-2xl h-[450px] order-2 lg:order-1 group">
+            <img src="https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=1000&q=80" alt="iPhone 18 Duo Display Showcase" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-appleBg via-transparent to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-black/70 backdrop-blur-md border border-white/10">
+              <span class="text-xs text-laserCyan font-bold uppercase tracking-wider block">Flexibility Redefined</span>
+              <p class="text-xs text-gray-300 mt-1">Unfolds into an 8.1-inch seamless workspace canvas.</p>
+            </div>
+          </div>
+
+          <div class="space-y-6 order-1 lg:order-2">
+            <div class="inline-block px-3.5 py-1 rounded-full bg-laserCyan/20 border border-laserCyan text-neon-text-cyan text-xs font-extrabold uppercase tracking-widest">
+              Form Factor Evolution
+            </div>
+            <h2 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">
+              iPhone 18 <br/><span class="neon-text-cyan">Duo</span>
+            </h2>
+            <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+              The first dual-screen foldable iPhone. Engineered with a custom zero-crease titanium hinge and ultra-thin flexible glass. Run two apps full-screen simultaneously or expand into tablet view for ultimate productivity.
+            </p>
+
+            <div class="grid grid-cols-2 gap-4 pt-4">
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-laserCyan/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">External Screen</span>
+                <span class="text-xl font-bold text-white">6.3" OLED Cover</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-laserCyan/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Inner Screen</span>
+                <span class="text-xl font-bold text-white">8.1" Dual Retina</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-laserCyan/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Hinge Tech</span>
+                <span class="text-xl font-bold text-white">Liquid Metal Titanium</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-laserCyan/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Multitasking</span>
+                <span class="text-xl font-bold text-white">Dual-App SplitOS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: APPLE HOMEVIEW HUB -->
+    <section id="sec-homeview" class="tab-content hidden space-y-12">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border border-white/15 relative overflow-hidden tilt-card">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class="space-y-6">
+            <div class="inline-block px-3.5 py-1 rounded-full bg-electricPurple/30 border border-electricPurple text-neon-text-purple text-xs font-extrabold uppercase tracking-widest">
+              Ambient Robotics
+            </div>
+            <h2 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">
+              Apple <br/><span class="neon-text-purple">HomeView</span>
+            </h2>
+            <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+              A revolutionary robotic home display powered by homeOS. Mounted on a whisper-quiet motorized robotic arm that follows you around the room, framing video calls automatically and acting as your central smart home command center.
+            </p>
+
+            <div class="grid grid-cols-2 gap-4 pt-4">
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-electricPurple/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Display</span>
+                <span class="text-xl font-bold text-white">10.5" Floating Touch</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-electricPurple/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Robotics</span>
+                <span class="text-xl font-bold text-white">360° Motorized Base</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-electricPurple/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">OS Platform</span>
+                <span class="text-xl font-bold text-white">homeOS 1.0</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-electricPurple/50 transition-colors">
+                <span class="text-xs text-gray-400 uppercase font-semibold block">Audio System</span>
+                <span class="text-xl font-bold text-white">3D Spatial Acoustics</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative rounded-3xl overflow-hidden border border-white/20 shadow-2xl h-[450px] group">
+            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1000&q=80" alt="Apple HomeView Ambient Hub" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-appleBg via-transparent to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-black/70 backdrop-blur-md border border-white/10">
+              <span class="text-xs text-electricPurple font-bold uppercase tracking-wider block">Ambient Tracking</span>
+              <p class="text-xs text-gray-300 mt-1">Facial and gesture recognition seamlessly aligns the screen with your gaze.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: COMPARISON MATRIX -->
+    <section id="sec-compare" class="tab-content hidden space-y-8">
+      <div class="text-center space-y-3">
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Keynote Specifications Matrix</h2>
+        <p class="text-gray-400 text-sm max-w-xl mx-auto">Side-by-side feature comparison of Apple's flagship lineup for 2026.</p>
+      </div>
+
+      <div class="glass-card rounded-3xl p-4 sm:p-8 border border-white/15 overflow-x-auto">
+        <table class="w-full text-left border-collapse min-w-[650px]">
+          <thead>
+            <tr class="border-b border-white/10 text-xs font-bold text-gray-400 uppercase tracking-wider">
+              <th class="py-4 px-4">Feature</th>
+              <th class="py-4 px-4 text-burgundyGlow font-black">iPhone 18 Pro Max</th>
+              <th class="py-4 px-4 text-laserCyan font-black">iPhone 18 Duo</th>
+              <th class="py-4 px-4 text-electricPurple font-black">Apple HomeView</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-xs sm:text-sm text-gray-300">
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4 font-semibold text-white">Category</td>
+              <td class="py-4 px-4">Monolithic Ultra Smartphone</td>
+              <td class="py-4 px-4">Dual-Screen Foldable</td>
+              <td class="py-4 px-4">Robotic Smart Home Hub</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4 font-semibold text-white">Display</td>
+              <td class="py-4 px-4">6.9" Super Retina XDR OLED</td>
+              <td class="py-4 px-4">6.3" Outer / 8.1" Inner OLED</td>
+              <td class="py-4 px-4">10.5" Touch Display</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4 font-semibold text-white">Processor</td>
+              <td class="py-4 px-4">A20 Pro (TSMC 2nm)</td>
+              <td class="py-4 px-4">A20 Bionic (TSMC 2nm)</td>
+              <td class="py-4 px-4">A18 Neural Chip</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4 font-semibold text-white">Camera System</td>
+              <td class="py-4 px-4">48MP Variable + 6x Zoom</td>
+              <td class="py-4 px-4">Dual 48MP Wide/Ultra-Wide</td>
+              <td class="py-4 px-4">12MP Center Stage Camera</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4 font-semibold text-white">Key Innovation</td>
+              <td class="py-4 px-4">Mechanical Aperture f/1.4 - f/4.0</td>
+              <td class="py-4 px-4">Zero-Crease Titanium Hinge</td>
+              <td class="py-4 px-4">Motorized 360° Swivel Arm</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4 font-semibold text-white">Operating System</td>
+              <td class="py-4 px-4">iOS 20</td>
+              <td class="py-4 px-4">iOS 20 SplitOS</td>
+              <td class="py-4 px-4">homeOS 1.0</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 px-4 font-semibold text-white">Starting Price</td>
+              <td class="py-4 px-4 font-bold text-white">$1,199 USD</td>
+              <td class="py-4 px-4 font-bold text-white">$1,499 USD</td>
+              <td class="py-4 px-4 font-bold text-white">$499 USD</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 6: INTERACTIVE TECH QUIZ -->
+    <section id="sec-quiz" class="tab-content hidden space-y-8 max-w-3xl mx-auto">
+      <div class="text-center space-y-3">
+        <span class="px-3 py-1 rounded-full bg-laserCyan/20 text-laserCyan border border-laserCyan/40 text-xs font-bold uppercase tracking-widest">
+          Interactive Challenge
+        </span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Keynote Knowledge Quiz</h2>
+        <p class="text-gray-400 text-sm">Test how well you watched the 2026 Apple Special Event highlights.</p>
+      </div>
+
+      <div class="glass-card rounded-3xl p-6 sm:p-10 border border-white/15 space-y-8 relative overflow-hidden">
+        <!-- Question Container -->
+        <div id="quiz-box" class="space-y-6">
+          <div class="flex items-center justify-between text-xs font-bold text-gray-400 border-b border-white/10 pb-4">
+            <span id="quiz-progress">Question 1 of 4</span>
+            <span id="quiz-score" class="text-laserCyan">Score: 0</span>
+          </div>
+
+          <h3 id="quiz-question" class="text-xl sm:text-2xl font-bold text-white leading-snug">
+            Which semiconductor node is featured in the new A20 Pro chipset?
+          </h3>
+
+          <div id="quiz-options" class="grid grid-cols-1 gap-3.5">
+            <!-- Dynamic quiz buttons populated via JavaScript -->
+          </div>
+
+          <div id="quiz-feedback" class="hidden p-4 rounded-xl text-xs font-semibold leading-relaxed border transition-all">
+            <!-- Feedback message -->
+          </div>
+        </div>
+
+        <!-- Completion Box (Hidden by default) -->
+        <div id="quiz-complete" class="hidden text-center space-y-6 py-6">
+          <div class="w-20 h-20 bg-gradient-to-tr from-laserCyan to-electricPurple rounded-full flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(0,242,254,0.6)] animate-bounce">
+            <svg class="w-10 h-10 text-black fill-current" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <h3 class="text-3xl font-extrabold text-white">Quiz Completed!</h3>
+          <p id="quiz-final-score" class="text-lg text-gray-300"></p>
+          <button onclick="restartQuiz()" class="px-8 py-3 rounded-full bg-gradient-to-r from-burgundyGlow to-electricPurple text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:brightness-125 transition-all">
+            Retake Quiz
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-8 relative z-10 bg-appleBg/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+      <p class="text-xs text-gray-400">
+        Designed for Apple Keynote Showcase 2026 Experience. Powered by Tailwind CSS & Cinematic Canvas.
+      </p>
+      <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">
+        Interactive Concept • All Rights Reserved
+      </p>
+    </div>
+  </footer>
+
+  <!-- Canvas Stars, Web Audio SFX & Interactive Script -->
+  <script>
+    // --- WEB AUDIO API SFX SYNTHESIZER ---
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        const now = ctx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'tab') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        } else if (type === 'success') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.linearRampToValueAtTime(110, now + 0.15);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        }
+      } catch (e) {
+        // Audio fallback safeguard
+      }
+    }
+
+    // --- HERO VIDEO CONTROLS ---
+    function toggleVideoMute() {
+      const video = document.getElementById('hero-video');
+      const muteText = document.getElementById('mute-text');
+      const muteIcon = document.getElementById('mute-icon');
+      
+      video.muted = !video.muted;
+      playSound('click');
+
+      if (video.muted) {
+        muteText.textContent = "Unmute";
+        muteIcon.innerHTML = `<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zM3 9v6h4l5 5V4L7 9H3z"/>`;
+      } else {
+        muteText.textContent = "Mute";
+        muteIcon.innerHTML = `<path d="M3.63 3.63a.996.996 0 00-1.41 0c-.39.39-.39 1.02 0 1.41L7.29 10H3v4h4l5 5v-6.17l4.18 4.18c-.49.37-1.02.68-1.6.91v2.06c1.13-.31 2.18-.87 3.07-1.62l1.92 1.92c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L3.63 3.63zM12 4L9.91 6.09 12 8.18V4z"/>`;
+      }
+    }
+
+    function restartVideo() {
+      const video = document.getElementById('hero-video');
+      video.currentTime = 0;
+      video.play();
+      playSound('click');
+    }
+
+    // --- CANVAS STARFIELD & PARTICLE SPEED EFFECT ---
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    const numStars = 140;
+    let starSpeedMultiplier = 1;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function initStars() {
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 1.5 + 0.5,
+          alpha: Math.random(),
+          speed: Math.random() * 0.015 + 0.005
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => {
+        star.alpha += star.speed * starSpeedMultiplier;
+        if (star.alpha > 1 || star.alpha < 0) {
+          star.speed = -star.speed;
+        }
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+        ctx.shadowBlur = star.radius * 4;
+        ctx.shadowColor = '#00f2fe';
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initStars();
+    });
+
+    resizeCanvas();
+    initStars();
+    drawStars();
+
+    // Accelerate particle stars on hover interactives
+    document.querySelectorAll('.tilt-card, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { starSpeedMultiplier = 2.5; });
+      el.addEventListener('mouseleave', () => { starSpeedMultiplier = 1; });
+    });
+
+    // --- 3D PARALLAX MOUSE TRACKING EFFECT ---
+    document.addEventListener('mousemove', (e) => {
+      const cards = document.querySelectorAll('.tilt-card');
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const cardX = rect.left + rect.width / 2;
+        const cardY = rect.top + rect.height / 2;
+
+        const deltaX = (mouseX - cardX) / (window.innerWidth / 2);
+        const deltaY = (mouseY - cardY) / (window.innerHeight / 2);
+
+        // Apply dynamic 3D tilt transformation
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          card.style.transform = `perspective(1000px) rotateX(${-deltaY * 6}deg) rotateY(${deltaX * 6}deg) translateY(-4px)`;
+        }
+      });
+    });
+
+    // Reset tilt on mouse leave
+    document.addEventListener('mouseleave', () => {
+      document.querySelectorAll('.tilt-card').forEach(card => {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+      });
+    });
+
+    // --- TAB SWITCHING ROUTINE ---
+    function switchTab(tabId) {
+      playSound('tab');
+
+      // Hide all contents
+      document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.add('hidden');
+        el.classList.remove('block');
+      });
+
+      // Show selected content
+      const targetSec = document.getElementById(`sec-${tabId}`);
+      if (targetSec) {
+        targetSec.classList.remove('hidden');
+        targetSec.classList.add('block');
+      }
+
+      // Reset desktop tab styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 text-gray-400 hover:text-white";
+      });
+
+      // Highlight active desktop tab
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      if (activeBtn) {
+        if (tabId === 'overview') {
+          activeBtn.className = "tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 bg-gradient-to-r from-burgundyGlow to-electricPurple text-white shadow-[0_0_20px_rgba(139,0,50,0.6)]";
+        } else if (tabId === 'homeview') {
+          activeBtn.className = "tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 bg-electricPurple text-white shadow-[0_0_20px_rgba(123,44,191,0.6)]";
+        } else {
+          activeBtn.className = "tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 bg-laserCyan text-black font-extrabold shadow-[0_0_20px_rgba(0,242,254,0.6)]";
+        }
+      }
+
+      // Highlight mobile tab
+      document.querySelectorAll('.mobile-tab').forEach(mbtn => {
+        mbtn.className = "mobile-tab text-gray-400 whitespace-nowrap uppercase font-semibold";
+      });
+      const activeMobileBtn = document.getElementById(`mtab-${tabId}`);
+      if (activeMobileBtn) {
+        activeMobileBtn.className = "mobile-tab text-laserCyan font-bold whitespace-nowrap uppercase";
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- INTERACTIVE QUIZ DATA & LOGIC ---
+    const quizData = [
+      {
+        question: "Which semiconductor node process powers the flagship A20 Pro chip?",
+        options: ["TSMC 3nm (N3E)", "TSMC 2nm Node", "Intel 18A", "4nm FinFET"],
+        answer: 1,
+        explanation: "The A20 Pro utilizes TSMC's cutting-edge 2nm process for unmatched efficiency and power."
+      },
+      {
+        question: "What physical lens feature is debuting on the iPhone 18 Pro Max camera?",
+        options: ["Periscope Liquid Lens", "Mechanical Variable Aperture", "Dual Thermal Sensor", "Fixed f/1.2 Aperture"],
+        answer: 1,
+        explanation: "iPhone 18 Pro Max introduces a mechanical variable aperture allowing adjustment from f/1.4 to f/4.0."
+      },
+      {
+        question: "What is the inner screen diagonal measurement of the iPhone 18 Duo when fully unfolded?",
+        options: ["6.9 inches", "7.6 inches", "8.1 inches", "10.5 inches"],
+        answer: 2,
+        explanation: "The foldable iPhone 18 Duo opens up into an 8.1-inch Ultra Retina XDR canvas."
+      },
+      {
+        question: "What operating system runs natively on the Apple HomeView hub?",
+        options: ["tvOS 20", "homeOS 1.0", "macOS Sequoia", "iPadOS 20"],
+        answer: 1,
+        explanation: "Apple HomeView is powered by homeOS 1.0, tailored specifically for ambient smart display robotics."
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    function renderQuestion() {
+      answered = false;
+      const q = quizData[currentQuestion];
+      document.getElementById('quiz-progress').textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+      document.getElementById('quiz-score').textContent = `Score: ${score}`;
+      document.getElementById('quiz-question').textContent = q.question;
+      
+      const feedbackEl = document.getElementById('quiz-feedback');
+      feedbackEl.classList.add('hidden');
+      feedbackEl.className = "hidden p-4 rounded-xl text-xs font-semibold leading-relaxed border transition-all";
+
+      const optionsBox = document.getElementById('quiz-options');
+      optionsBox.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-laserCyan hover:bg-white/10 text-sm font-semibold text-white transition-all duration-200 flex items-center justify-between";
+        btn.innerHTML = `<span>${opt}</span><span class="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center text-[10px] text-gray-400">${String.fromCharCode(65 + idx)}</span>`;
+        btn.onclick = () => selectOption(idx);
+        optionsBox.appendChild(btn);
+      });
+    }
+
+    function selectOption(index) {
+      if (answered) return;
+      answered = true;
+
+      const q = quizData[currentQuestion];
+      const feedbackEl = document.getElementById('quiz-feedback');
+      const optionButtons = document.getElementById('quiz-options').children;
+
+      if (index === q.answer) {
+        score++;
+        playSound('success');
+        optionButtons[index].classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+        feedbackEl.textContent = `Correct! ${q.explanation}`;
+        feedbackEl.classList.remove('hidden');
+        feedbackEl.classList.add('bg-emerald-950/40', 'border-emerald-500/40', 'text-emerald-300');
+      } else {
+        playSound('error');
+        optionButtons[index].classList.add('bg-rose-500/20', 'border-rose-500', 'text-rose-300');
+        optionButtons[q.answer].classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+        feedbackEl.textContent = `Incorrect. ${q.explanation}`;
+        feedbackEl.classList.remove('hidden');
+        feedbackEl.classList.add('bg-rose-950/40', 'border-rose-500/40', 'text-rose-300');
+      }
+
+      document.getElementById('quiz-score').textContent = `Score: ${score}`;
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+          renderQuestion();
+        } else {
+          showQuizComplete();
+        }
+      }, 2500);
+    }
+
+    function showQuizComplete() {
+      document.getElementById('quiz-box').classList.add('hidden');
+      const completeBox = document.getElementById('quiz-complete');
+      completeBox.classList.remove('hidden');
+      document.getElementById('quiz-final-score').textContent = `You scored ${score} out of ${quizData.length} correct!`;
+      playSound('success');
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      playSound('click');
+      document.getElementById('quiz-complete').classList.add('hidden');
+      document.getElementById('quiz-box').classList.remove('hidden');
+      renderQuestion();
+    }
+
+    // Initialize Quiz on load
+    renderQuestion();
+  </script>
+</body>
+</html>
